@@ -1,7 +1,3 @@
-.App {
-  text-align: center;
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -30,10 +26,35 @@
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(10px);
   }
+
   100% {
     transform: translateY(0px);
   }
+}
+
+.site-layout-content {
+  min-height: 400px;
+  padding: 24px;
+  background: #fff;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.ant-card-meta-detail {
+  min-width: 200px;
+  width: 100%;
+}
+
+.ant-card-meta-title {
+  text-align: left;
+}
+
+.ant-card-meta-description {
+  text-align: center;
 }
