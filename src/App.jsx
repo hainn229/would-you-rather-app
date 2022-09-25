@@ -1,7 +1,13 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import { useNavigate, Route, Routes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate, Route, Routes, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Layout,
+} from 'antd';
+
+import { auth, getUsers } from './redux/user.slice';
+import Nav from './components/Nav';
 
 import LoginPage from './pages/Login';
 import Home from './pages/Home';
@@ -10,33 +16,62 @@ import LeaderBoard from './pages/LeaderBoard';
 import Answers from './pages/Answers';
 import Results from './pages/Results';
 import NotFound from './pages/NotFound';
+import { getQuestions } from './redux/question.slice';
 
+const { Header, Content, Footer } = Layout;
 
 const App = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-  const users = useSelector((state) => state.users);
+  const users = useSelector((state) => state.users.all);
+  const user = users ? users.current : '';
+  const questions = useSelector((state) => state.questions.all);
+
 
   useEffect(() => {
-    setTimeout(() => {
-      if (!users.current) {
-        navigate('/login');
+    if (!users) dispatch(getUsers());
+    if (!questions) dispatch(getQuestions());
+    if (!user) {
+      const userID = localStorage.getItem('currentUserWouldYouRatherApp');
+      if (!userID) {
+        const routes = ['/', '/add', '/leaderboard']
+        const pathName = location.pathname;
+        if (!routes.includes(pathName)) {
+          setTimeout(() => {
+            const currentPath = location.pathname;
+            if (currentPath !== '/login') navigate('/login')
+          }, 5000);
+        } else {
+          navigate('/login')
+        }
+      } else {
+        dispatch(auth(userID));
       }
-    }, 2000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users]);
+    }
+  }, [dispatch, location.pathname, navigate, questions, user, users]);
 
-  return <Routes>
-    <Route>
-      <Route exact path='/' element={<Home />} />
-      <Route exact path='/add' element={<NewQuestion />} />
-      <Route exact path='/leaderboard' element={<LeaderBoard />} />
-      <Route exact path='/questions/:id/answers' element={<Answers />} />
-      <Route exact path='/questions/:id/results' element={<Results />} />
-    </Route>
-    <Route path='/login' element={<LoginPage />} />
-    <Route path='*' element={<NotFound />} />
-  </Routes>;
+  return <Layout className='layout'>
+    <Header>
+      <Nav data={{ users, questions, user }} />
+    </Header>
+    <Content style={{ padding: '20px 50px' }}>
+      <div className='site-layout-content'>
+        <Routes>
+          <Route exact path='/' element={<Home data={{ users, questions, user }} />} />
+          <Route exact path='/add' element={<NewQuestion data={{ users, questions, user }} />} />
+          <Route exact path='/leaderboard' element={<LeaderBoard data={{ users, questions, user }} />} />
+          <Route exact path='/questions/:id/answers' element={<Answers data={{ users, questions, user }} />} />
+          <Route exact path='/questions/:id/results' element={<Results data={{ users, questions, user }} />} />
+          <Route exact path='/login' element={<LoginPage data={{ users, questions, user }} />} />
+          <Route path='*' element={<NotFound data={{ users, questions, user }} />} />
+        </Routes>
+      </div>
+    </Content>
+
+    <Footer style={{ textAlign: 'center' }}>Would You Rather App ©2022 Created by HaiNN27</Footer>
+  </Layout>;
 }
 
 export default App;

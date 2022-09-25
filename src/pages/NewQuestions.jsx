@@ -1,12 +1,8 @@
 import React from 'react';
-import { Button, Form, Input, Layout, message, Space, Typography } from 'antd';
-import Nav from '../components/Nav';
+import { Button, Form, Input, message, Space, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getQuestions, saveQuestion } from '../redux/question.slice';
-import { useEffect } from 'react';
-import { getUsers } from '../redux/user.slice';
 
-const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
 
 const NewQuestion = () => {
@@ -33,17 +29,9 @@ const NewQuestion = () => {
     }
   };
 
-  useEffect(() => {
-    if (!user) dispatch(getUsers());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
-
-  return <Layout>
-    <Header>
-      <Nav />
-    </Header>
-    <Content style={{ padding: '20px 50px' }}>
-      <div className='site-layout-content' style={{ textAlign: 'center', padding: '30px' }}>
+  return <>
+    {user ?
+      <div style={{ textAlign: 'center', padding: '30px' }}>
         <Title>Create New Question</Title>
         <Form
           form={form}
@@ -93,9 +81,8 @@ const NewQuestion = () => {
           </Form.Item>
         </Form>
       </div>
-    </Content>
-    <Footer style={{ textAlign: 'center' }}>Would You Rather App ©2022 Created by HaiNN27</Footer>
-  </Layout>;
+      : ''}
+  </>
 };
 
 export default NewQuestion;

@@ -17,18 +17,18 @@ const LeaderBoardCard = (props) => {
   let tagTotal, nthText;
   switch (nth) {
     case 1:
-      tagTotal = <Tag color="#f50" style={{ color: 'white' }}>Total: {data.total}</Tag>
-      nthText = <Tag color="#f50" style={{ color: 'white' }}>1st</Tag>;
+      tagTotal = <Tag color='#f50' style={{ color: 'white' }}>Total: {data.total}</Tag>
+      nthText = <Tag color='#f50' style={{ color: 'white' }}>1st</Tag>;
       break;
 
     case 2:
-      tagTotal = <Tag color="#2db7f5" style={{ color: 'white' }}>Total: {data.total}</Tag>
-      nthText = <Tag color="#2db7f5" style={{ color: 'white' }}>2nd</Tag>
+      tagTotal = <Tag color='#2db7f5' style={{ color: 'white' }}>Total: {data.total}</Tag>
+      nthText = <Tag color='#2db7f5' style={{ color: 'white' }}>2nd</Tag>
       break;
 
     default:
-      tagTotal = <Tag color="#87d068" style={{ color: 'white' }}>Total: {data.total}</Tag>
-      nthText = <Tag color="#87d068" style={{ color: 'white' }}>3rd</Tag>;
+      tagTotal = <Tag color='#87d068' style={{ color: 'white' }}>Total: {data.total}</Tag>
+      nthText = <Tag color='#87d068' style={{ color: 'white' }}>3rd</Tag>;
       break;
   }
 

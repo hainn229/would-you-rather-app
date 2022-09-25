@@ -1,19 +1,20 @@
-import React, { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { List } from 'antd';
 import { ANSWERED, UNANSWERED } from '../constants';
-import { getQuestions } from '../redux/question.slice';
-import { getUsers } from '../redux/user.slice';
 import Question from './Question';
 
 
 
 const ListQuestions = (props) => {
-  const dispatch = useDispatch();
-  const { type } = props;
-  const questions = useSelector(state => state.questions.all);
-  const user = useSelector(state => state.users.current)
+  const { type, data } = props;
+  const { user: userFromProps, questions: questionsFromProps } = data;
+  const userFromState = useSelector(state => state.users.current);
+  const questionsFromState = useSelector(state => state.questions.all);
+  
+  const user = userFromProps || userFromState;
+  const questions = questionsFromProps || questionsFromState;
 
   const listUnanswered = useMemo(
     () => user && user.id
@@ -32,11 +33,6 @@ const ListQuestions = (props) => {
       : [],
     [questions, user]
   );
-
-  useEffect(() => {
-    if (!questions) dispatch(getQuestions());
-    if (!user) dispatch(getUsers());
-  }, [dispatch, questions, user])
 
   return <>
     {

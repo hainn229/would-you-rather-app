@@ -30,7 +30,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     auth: (state, action) => {
+      localStorage.removeItem('currentUserWouldYouRatherApp')
       state.current = state.all[action.payload];
+      localStorage.setItem('currentUserWouldYouRatherApp', action.payload);
     },
     logout: (state, _action) => {
       state.current = '';
