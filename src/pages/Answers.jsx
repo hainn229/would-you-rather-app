@@ -54,7 +54,7 @@ const Question = () => {
         .loading('Please wait a while...', 1)
         .then(() => {
           message.success('Submit answer successfully!', 1)
-          navigate('/');
+          navigate(`/questions/${questionId}/results`);
         })
     }
   };
