@@ -9,6 +9,7 @@ import {
   message,
   Avatar,
   Space,
+  Row,
 } from 'antd';
 
 import background from '../assets/img/background.png';
@@ -24,7 +25,7 @@ const LoginPage = (props) => {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState(props.data.users || '');
-  
+
   const usersData = useSelector(state => state.users.all);
 
   useEffect(() => {
@@ -59,54 +60,55 @@ const LoginPage = (props) => {
       />
     </div>
     <br />
-    <Form
-      labelCol={{
-        span: 12,
-        offset: 6
-      }}
-      wrapperCol={{
-        span: 12,
-        offset: 6
-      }}
-      name='normal_login'
-      className='login-form'
-      onFinish={onFinish}
-    >
-      <Form.Item
-        name='user'
-        rules={[
-          {
-            required: true,
-            message: 'Please select one user!',
-          },
-        ]}
+    <Row justify='center' align='top'>
+      <Form
+        name='normal_login'
+        className='login-form'
+        onFinish={onFinish}
       >
-        <Select
-          placeholder='Select an user to continue'
+        <Form.Item
+          style={{
+            width: '100%',
+            minWidth: 200,
+            maxWidth: 700
+          }}
+          name='user'
+          rules={[
+            {
+              required: true,
+              message: 'Please select one user!',
+            },
+          ]}
         >
-          {
-            users
-            && Object.values(users).map(
-              user => <Option key={user.id} value={user.id}>
-                <Space>
-                  <Avatar shape='round' size='small' src={user.avatarURL} /> {user.name}
-                </Space>
-              </Option>
-            )
-          }
-        </Select>
-      </Form.Item>
+          <Select
+            placeholder='Select an user to continue'
+          >
+            {
+              users
+              && Object.values(users).map(
+                user => <Option key={user.id} value={user.id}>
+                  <Space>
+                    <Avatar shape='round' size='small' src={user.avatarURL} /> {user.name}
+                  </Space>
+                </Option>
+              )
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item>
+          <Button
+            style={{
 
-      <Form.Item>
-        <Button
-          type='primary'
-          htmlType='submit'
-          className='login-form-button'
-        >
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
+            }}
+            type='primary'
+            htmlType='submit'
+            className='login-form-button'
+          >
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </Row >
   </>
 }
 

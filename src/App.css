@@ -6,10 +6,6 @@
   background: #fff;
 }
 
-.login-form-button {
-  width: 100%;
-}
-
 .ant-card-meta-detail {
   min-width: 200px;
   width: 100%;
@@ -21,4 +17,12 @@
 
 .ant-card-meta-description {
   text-align: center;
+}
+
+.login-form {
+  max-width: 500px;
+}
+
+.login-form-button {
+  width: 100%;
 }
