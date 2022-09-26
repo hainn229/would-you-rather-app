@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as API from '../utils/api';
-import { addQuestion, getUsers, updateQuestionForUser } from './user.slice';
+import { getUsers } from './user.slice';
 
 const getQuestions = createAsyncThunk(
   'questions/get-questions',
@@ -14,22 +14,20 @@ const getQuestions = createAsyncThunk(
 const saveQuestionAnswer = createAsyncThunk(
   'questions/save-question-answer',
   async (answer, APIThunk) => {
-    // const data = await API.saveQuestionAnswer(answer);
-    await APIThunk.dispatch(updateQuestionForUser(answer))
-    await APIThunk.dispatch(getUsers());
-    
-    return;
+    const data = await API.saveQuestionAnswer(answer);
+		await APIThunk.dispatch(getUsers());
+
+		return data;
   }
 );
 
 const saveQuestion = createAsyncThunk(
   'questions/save-question',
   async (question, APIThunk) => {
-    // const data = await API.saveQuestion(question);
-    await APIThunk.dispatch(addQuestion(question));
-    await APIThunk.dispatch(getUsers());
+    const data = await API.saveQuestion(question);
+		await APIThunk.dispatch(getUsers());
 
-    return;
+		return data;
   }
 );
 

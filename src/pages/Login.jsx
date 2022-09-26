@@ -48,8 +48,6 @@ const LoginPage = (props) => {
     }
   };
 
- 
-
   return <>
     <div style={{ textAlign: 'center', padding: '0px 30px' }}>
       <Title>Welcome to Would You Rather app!</Title>
@@ -91,7 +89,7 @@ const LoginPage = (props) => {
             && Object.values(users).map(
               user => <Option key={user.id} value={user.id}>
                 <Space>
-                  <Avatar shape='square' size='small' src={user.avatarURL} /> {user.name}
+                  <Avatar shape='round' size='small' src={user.avatarURL} /> {user.name}
                 </Space>
               </Option>
             )

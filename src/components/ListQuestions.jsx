@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { List } from 'antd';
 import { ANSWERED, UNANSWERED } from '../constants';
 import Question from './Question';
+import { getUsers } from '../redux/user.slice';
 
 
 
 const ListQuestions = (props) => {
+  const dispatch = useDispatch();
   const { type, data } = props;
   const { user: userFromProps, questions: questionsFromProps } = data;
   const userFromState = useSelector(state => state.users.current);
@@ -17,20 +19,32 @@ const ListQuestions = (props) => {
   const questions = questionsFromProps || questionsFromState;
 
   const listUnanswered = useMemo(
-    () => user && user.id
-      ? Object.values(questions).filter(({ optionOne, optionTwo }) =>
-        ![...optionOne.votes, ...optionTwo.votes].includes(user.id)
-      )
-      : [],
+    () => {
+      if (!user) dispatch(getUsers);
+      else {
+        return user && user.id
+          ? Object.values(questions).filter(({ optionOne, optionTwo }) =>
+            ![...optionOne.votes, ...optionTwo.votes].includes(user.id)
+          )
+          : []
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [questions, user]
   );
 
   const listAnswered = useMemo(
-    () => user && user.id
-      ? Object.values(questions).filter(({ optionOne, optionTwo }) =>
-        [...optionOne.votes, ...optionTwo.votes].includes(user.id)
-      )
-      : [],
+    () => {
+      if (!user) dispatch(getUsers);
+      else {
+        return user && user.id
+          ? Object.values(questions).filter(({ optionOne, optionTwo }) =>
+            [...optionOne.votes, ...optionTwo.votes].includes(user.id)
+          )
+          : []
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [questions, user]
   );
 
@@ -48,7 +62,7 @@ const ListQuestions = (props) => {
             xxl: 2,
           }}
           dataSource={_.orderBy(listAnswered, ['timestamp'], ['desc'])}
-          renderItem={item => (
+          renderItem={(item) => (
             <List.Item key={item.id}>
               <Question type={ANSWERED} data={item} />
             </List.Item>

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const NotFound = (props) => {
   const navigate = useNavigate();
   let isBackToHome = false;
-  const {data} = props;
+  const { data } = props;
   const { user: userFromProps } = data;
   const userFromState = useSelector(state => state.users.current);
   const [user, setUser] = useState(userFromProps || userFromState);

@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { store } from './redux/store';
 import App from './App';
 import './index.css';
-import 'antd/dist/antd.css';
 
 const container = document.getElementById('root');
 const root = createRoot(container);

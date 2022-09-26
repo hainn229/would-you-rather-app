@@ -29,22 +29,24 @@ const App = () => {
   const user = users ? users.current : '';
   const questions = useSelector((state) => state.questions.all);
 
-
   useEffect(() => {
     if (!users) dispatch(getUsers());
     if (!questions) dispatch(getQuestions());
     if (!user) {
       const userID = localStorage.getItem('currentUserWouldYouRatherApp');
       if (!userID) {
-        const routes = ['/', '/add', '/leaderboard']
+        const routes = ['/', '/add', '/leaderboard'];
         const pathName = location.pathname;
         if (!routes.includes(pathName)) {
           setTimeout(() => {
             const currentPath = location.pathname;
-            if (currentPath !== '/login') navigate('/login')
+            if (currentPath !== '/login')
+              navigate('/login');
           }, 5000);
         } else {
-          navigate('/login')
+          const currentPathN = location.pathname;
+          if (currentPathN !== '/login')
+            navigate('/login');
         }
       } else {
         dispatch(auth(userID));
@@ -60,12 +62,12 @@ const App = () => {
       <div className='site-layout-content'>
         <Routes>
           <Route exact path='/' element={<Home data={{ users, questions, user }} />} />
-          <Route exact path='/add' element={<NewQuestion data={{ users, questions, user }} />} />
-          <Route exact path='/leaderboard' element={<LeaderBoard data={{ users, questions, user }} />} />
+          <Route exact path='/add' element={<NewQuestion />} />
+          <Route exact path='/leaderboard' element={<LeaderBoard />} />
           <Route exact path='/questions/:id/answers' element={<Answers data={{ users, questions, user }} />} />
           <Route exact path='/questions/:id/results' element={<Results data={{ users, questions, user }} />} />
-          <Route exact path='/login' element={<LoginPage data={{ users, questions, user }} />} />
-          <Route path='*' element={<NotFound data={{ users, questions, user }} />} />
+          <Route exact path='/login' element={<LoginPage data={{ users }} />} />
+          <Route path='*' element={<NotFound data={{ user }} />} />
         </Routes>
       </div>
     </Content>

@@ -23,8 +23,8 @@ const Question = (props) => {
     const user = users && users[author];
 
     const onClick = () => {
-      if (type === UNANSWERED) navigate(`/questions/${id}/answers`);
-      else navigate(`/questions/${id}/results`);
+      if (type === UNANSWERED) navigate(`/questions/${data.id && id}/answers`);
+      else navigate(`/questions/${data.id && id}/results`);
     }
 
     return <>

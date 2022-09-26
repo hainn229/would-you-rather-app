@@ -1,12 +1,15 @@
 import React from 'react';
 import { Button, Form, Input, message, Space, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { getQuestions, saveQuestion } from '../redux/question.slice';
+import { getUsers } from '../redux/user.slice';
 
 const { Title } = Typography;
 
 const NewQuestion = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const user = useSelector(state => state.users.current);
 
@@ -17,14 +20,18 @@ const NewQuestion = () => {
       message
         .loading('Please wait a while...', 1)
         .then(() => {
-          dispatch(saveQuestion({
-            optionOneText: values.optionOne,
-            optionTwoText: values.optionTwo,
-            author: user.id,
-          }))
-          dispatch(getQuestions());
-          form.resetFields();
-          message.success('Create new question successfully!', 1)
+          if (!user) dispatch(getUsers());
+          else {
+            dispatch(saveQuestion({
+              optionOneText: values.optionOne,
+              optionTwoText: values.optionTwo,
+              author: user.id,
+            }))
+            dispatch(getQuestions());
+            form.resetFields();
+            message.success('Create new question successfully!', 1)
+            navigate('/');
+          }
         })
     }
   };
@@ -62,7 +69,6 @@ const NewQuestion = () => {
             <Input placeholder='Enter option one...' />
           </Form.Item>
           <Form.Item
-            // label={<Title level={4}>Or...</Title>}
             name='optionTwo'
             rules={[
               {

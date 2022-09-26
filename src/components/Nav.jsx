@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   HomeOutlined,
@@ -20,26 +20,30 @@ import { getUsers, logout } from '../redux/user.slice';
 const Nav = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation()
   const { data } = props;
   const [user, setUser] = useState(data.user);
   const [current, setCurrent] = useState('');
   const userData = useSelector(state => state.users.current);
 
-  const onClickLeft = (e) => setCurrent(e.key);
+  const onClickLeft = (e) => {
+    if (location.pathname === '/') setCurrent('/')
+    else setCurrent(e.key)
+  };
   const onClickRight = (e) => {
     if (e.key.toLowerCase() === 'logout') {
       localStorage.removeItem('currentUserWouldYouRatherApp');
       setUser('');
       dispatch(logout())
       navigate('/login');
-    };
+    }
   };
 
   useEffect(() => {
     if (!user) {
       dispatch(getUsers());
       setUser(userData);
-    };
+    }
   }, [data, dispatch, user, userData])
 
   return <Row>
@@ -85,7 +89,7 @@ const Nav = (props) => {
                 label: `Hello, ${user.name}!`,
                 key: 'user',
                 icon: user.avatarURL
-                  ? <Avatar shape='square' size='large' src={user.avatarURL} />
+                  ? <Avatar shape='round' size='large' src={user.avatarURL} />
                   : <UserOutlined />,
               },
               {

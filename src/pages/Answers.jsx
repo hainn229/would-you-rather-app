@@ -45,14 +45,17 @@ const Answers = (props) => {
     if (!option) {
       message.warn('Please select one option');
     } else {
-      dispatch(saveQuestionAnswer({ authedUser: user.id, qid: questionId, answer: option }));
+      if (!user) dispatch(getUsers());
+      else {
+        dispatch(saveQuestionAnswer({ authedUser: user.id, qid: questionId, answer: option }));
 
-      message
-        .loading('Please wait a while...', 1)
-        .then(() => {
-          message.success('Submit answer successfully!', 1)
-          navigate(`/questions/${questionId}/results`);
-        })
+        message
+          .loading('Please wait a while...', 1)
+          .then(() => {
+            message.success('Submit answer successfully!', 1)
+            navigate(`/questions/${questionId}/results`);
+          })
+      }
     }
   };
 

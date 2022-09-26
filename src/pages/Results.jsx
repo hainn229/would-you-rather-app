@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   Card,
@@ -12,39 +12,45 @@ import {
   Progress,
   Tag
 } from 'antd';
+import { auth, getUsers } from '../redux/user.slice';
+import { getQuestions } from '../redux/question.slice';
 
 const { Title, Text } = Typography;
 
-const Results = (props) => {
+const Results = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const params = useParams();
   const questionId = params.id;
 
-  const {
-    user: userFromProps,
-    questions: questionsFromProps,
-    users: usersFromProps,
-  } = props;
+  const questions = useSelector((state) => state.questions.all);
+  const users = useSelector((state) => state.users.all);
+  const user = useSelector((state) => state.users.current);
 
-  const questionsFromState = useSelector((state) => state.questions.all);
-  const usersFromState = useSelector((state) => state.users.all);
-  const userFromState = useSelector((state) => state.users.current);
-
-  const user = userFromState || userFromProps
-  const questions = questionsFromState || questionsFromProps;
-  const users = usersFromState || usersFromProps;
+  useEffect(() => {
+    if (!users) dispatch(getUsers());
+    if (!questions) dispatch(getQuestions());
+    if (!user) {
+      const userID = localStorage.getItem('currentUserWouldYouRatherApp');
+      if (userID) dispatch(auth(userID));
+      else return navigate('/login')
+    }
+  }, [dispatch, navigate, questions, user, users])
 
   const question = questions ? questions[questionId] : '';
-  const { author, timestamp, optionOne, optionTwo } = question;
-  const authorData = users && author ? users[author] : '';
-
-  const nVoteOne = question && optionOne ? optionOne.votes.length : 0;
-  const nVoteTwo = question && optionTwo ? optionTwo.votes.length : 0;
+  const authorData = (users && question && question.author) ? users[question.author] : '';
+  const nVoteOne = (question && question.optionOne) ? question.optionOne.votes.length : 0;
+  const nVoteTwo = (question && question.optionTwo) ? question.optionTwo.votes.length : 0;
   const totalVote = nVoteOne + nVoteTwo;
+  
   let percentOne = nVoteOne / totalVote * 100;
   percentOne = percentOne.toFixed(0);
-  const percentTwo = 100 - Number(percentOne);
+  let percentTwo = 100 - Number(percentOne);
+  if (nVoteOne === 0 && nVoteTwo === 0) {
+    percentOne = 0;
+    percentTwo = 0;
+  }
 
   return <Row justify='center' align='top'>
     <Card
@@ -54,7 +60,7 @@ const Results = (props) => {
             Asked by {authorData.name}:
           </Title>
           <Text type='secondary' style={{ float: 'right' }}>
-            Created at: {moment(new Date(question && timestamp)).format('YYYY-MM-DD hh:mm A')}
+            Created at: {moment(new Date(question && question.timestamp)).format('YYYY-MM-DD hh:mm A')}
           </Text>
         </>
       }
@@ -84,10 +90,10 @@ const Results = (props) => {
           <Card
             title={<Row>
               <Col flex={4} style={{ textAlign: 'left' }}>
-                <Text >{question && optionOne ? optionOne.text : ''}</Text>
+                <Text >{question && question.optionOne ? question.optionOne.text : ''}</Text>
               </Col>
               <Col flex={1}>
-                {question && optionOne && optionOne.votes.includes(user.id) ? <Tag color='green'>Your voted</Tag> : ''}
+                {question && question.optionOne && question.optionOne.votes.includes(user.id) ? <Tag color='green'>Your voted</Tag> : ''}
               </Col>
             </Row>}
           >
@@ -105,10 +111,10 @@ const Results = (props) => {
           <Card
             title={<Row>
               <Col flex='auto' style={{ textAlign: 'left' }}>
-                <Text >{question && optionTwo ? optionTwo.text : ''}</Text>
+                <Text >{question && question.optionTwo ? question.optionTwo.text : ''}</Text>
               </Col>
               <Col flex='100px'>
-                {question && optionTwo && optionTwo.votes.includes(user.id) ? <Tag color='green'>Your voted</Tag> : ''}
+                {question && question.optionTwo && question.optionTwo.votes.includes(user.id) ? <Tag color='green'>Your voted</Tag> : ''}
               </Col>
             </Row>}
           >
